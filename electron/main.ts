@@ -11,7 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 700,
-    backgroundColor: "#191622",
+    backgroundColor: "#ffffff",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -19,6 +19,7 @@ function createWindow() {
   });
   mainWindow.webContents.openDevTools();
 
+  console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
   if (process.env.NODE_ENV === "development") {
     mainWindow.loadURL("http://localhost:5050");
   } else {
