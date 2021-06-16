@@ -44,12 +44,15 @@
     "webpack-dev-server": "^3.11.2"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^9.0.0",
     "css-loader": "^5.2.6",
     "electron": "^13.1.1",
     "electron-builder": "^22.11.7",
     "electron-devtools-installer": "^3.2.0"
   },
   "build": {
+    "productName": "DolphinSound",
+    "artifactName":"test",
     "appId": "your.id",
     "mac": {
       "category": "public.app-category.video"

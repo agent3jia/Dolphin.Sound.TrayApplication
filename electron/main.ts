@@ -19,12 +19,14 @@ function createWindow() {
     },
   });
   mainWindow.webContents.openDevTools();
-
+  let trayIcon: string;
   console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
   if (process.env.NODE_ENV === "development") {
+    trayIcon = path.join(__dirname, "../public/logo.png"); //app是选取的目录
     mainWindow.loadURL("http://localhost:5050");
   } else {
     mainWindow.loadFile(path.join(__dirname, "../dist/renderer/index.html"));
+    trayIcon = path.join(__dirname, "./static/logo.png"); //app是选取的目录
   }
 
   // 菜单的配置
@@ -100,8 +102,6 @@ function createWindow() {
       },
     },
   ];
-  //系统托盘图标目录
-  let trayIcon = path.join(__dirname, "../public/logo.png"); //app是选取的目录
   appTray = new Tray(trayIcon);
   //图标的上下文菜单
   const contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
