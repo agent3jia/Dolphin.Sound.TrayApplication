@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, globalShortcut, Menu } from "electron";
 import path from "path";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
@@ -19,7 +19,7 @@ function createWindow() {
   });
   mainWindow.webContents.openDevTools();
 
-  console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
+  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
   if (process.env.NODE_ENV === "development") {
     mainWindow.loadURL("http://localhost:5050");
   } else {
@@ -27,6 +27,58 @@ function createWindow() {
   }
   mainWindow.on("closed", () => {
     mainWindow = null;
+  });
+
+  // 菜单的配置
+  const menuTemplate = [
+    {
+      label: "官网",
+      submenu: [
+        {
+          label: "进入官网", // 子菜单的名字
+          accelerator: "ctrl+1", // 菜单的快捷键
+          click: () => {
+            // 点击 菜单触发的事件
+            let newWin: any = new BrowserWindow({
+              width: 400,
+              height: 400,
+              webPreferences: {
+                nodeIntegration: true, // 设置开启nodejs环境
+                enableRemoteModule: true, // enableRemoteModule保证renderer.js可以可以正常require('electron').remote，此选项默认关闭且网上很多资料没有提到
+              },
+            });
+            newWin.loadURL("http://dolphinsound.cn/");
+            // 开启窗口之后，需要定义关闭窗口指针为空，防止内存溢出
+            newWin.on("close", () => {
+              newWin = null;
+            });
+          },
+        },
+        { label: "菜单11" },
+      ],
+    },
+    {
+      label: "菜单2",
+      submenu: [{ label: "菜单21" }, { label: "菜单22" }],
+    },
+  ];
+  // 根据配置信息创建 menu 对象
+  const menuObj = Menu.buildFromTemplate(menuTemplate);
+  // 将对象作用当当前应用中
+  Menu.setApplicationMenu(menuObj);
+
+  // 全局注册 快捷键
+  globalShortcut.register("ctrl+x", function () {
+    console.log("ctrl+x is pressed");
+  });
+
+  // 退出的时候，注销所有的快捷键
+  app.on("will-quit", function () {
+    // Unregister a shortcut.
+    globalShortcut.unregister("ctrl+x");
+
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll();
   });
 }
 
@@ -43,4 +95,5 @@ app
         .catch((err: any) => console.log("An error occurred: ", err));
     }
   });
+
 app.allowRendererProcessReuse = true;
